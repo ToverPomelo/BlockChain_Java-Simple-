@@ -3,7 +3,7 @@ import java.security.*;
 import java.math.*;
 import java.security.spec.ECGenParameterSpec;
 import javax.crypto.Cipher;
-import sun.security.ec.ECPublicKeyImpl;
+//import sun.security.ec.ECPublicKeyImpl;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 
@@ -375,6 +375,17 @@ public class BlockChain{
     }
 
     /*模拟黑客攻击*/
+    //没想到//
+
+    /*伪造区块检验*/
+    public static boolean checkChain(List<Block> bc){
+        String hash = bc.get(0).preHash;
+        for(Block block : bc){
+            if(block.preHash != hash) return false;
+            hash = block.hash;
+        }
+        return true;
+    }
 
     public static void main(String[] args){
         try{
@@ -401,6 +412,16 @@ public class BlockChain{
             System.out.println("Balance for KunLin: \t" + accounts.get("KunLin").getBalance("aaa"));
 
             System.out.println("Print chain:\n" + blockChain.toString());
+
+            if(checkChain(blockChain)) System.out.println("Chain is healthy!");
+            else System.out.println("Chain is not healthy!");
+
+            Block newBlock = new Block(123,"gefadf",(new Date()).getTime(),null, 101); //伪造个BLock
+            blockChain.add(newBlock);
+            System.out.println("Hacked!");
+
+            if(checkChain(blockChain)) System.out.println("Chain is healthy!");
+            else System.out.println("Chain is not healthy!");
         }
         catch(Exception e){
             System.out.println(e);

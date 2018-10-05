@@ -18,12 +18,15 @@
 * createGenesisBlock()：创建创世区块（第一个），同时创建系统账户。
 * mineBlock(...)：挖矿，其实是把区块加入区块链的过程，因为区块太容易（或太快）被加入区块链（主账本）会有安全问题，所以要增加一些难度，比如改变幸运数字（nonce）知道该区块的哈希值前几位是0为止。（个人理解。。。）
 * createTransaction(...)：创建交易，对交易信息列表进行一一验证，然后交给矿工处理。（单机版省略了找矿工的过程，好像要广播？）
+* checkChain(...)：通过检测区块前后哈希检验链的合法性。
 ### 过程
 &emsp;&emsp;在初始化的时候，先创建创世区块和系统账户（防止系统账户被抢先注册），然后创建若干测试用户。
 &emsp;&emsp;在交易时，首先收集若干交易（用一个Transaction的List），收集到一定程度的时候创建交易（createTransaction），对每一条交易进行验证并刷新账户余额（Account.createTransaction和Account.getTransaction），验证是首先支付方用收钱方的公钥对数据（这里是交易金额）进行加密，同时用自己的私钥对数据进行签名，然后传给收钱方，收钱方收到后用自己的私钥进行解密，同时用支付方的公钥对数据进行验证。在对每一条数据验证完后，把验证成功的数据递交给矿工，矿工在交易数据的基础上增加系统对自己的挖矿奖励（因为后面生成哈希值的时候只能改变nonce所以先加进去），成功算出哈希后就生成Block并加入主账本。
 &emsp;&emsp;在查询余额时因为每次交易都会刷新余额，所以可以直接 Account.getBalance()，（不过这个是我认为每次都要遍历的话有点耗时才这样做的，不代表主流做法），也可以通过遍历主账本，利用收入减支出的方法计算余额（Account.refreshBalance）。（在查询余额时我设置了要加密码。。不过信息都是公开的就。。x_x）
 ## 参考资料
 &emsp;&emsp;这里贴一些我查到的比较有用的资料：
+- 官网：
+	- [BLOCKCHAIN](https://www.blockchain.com/btc/tx)
 - 参考的成品（这个是我们老师给的，可以看javascript源码喔）：
 	- [https://anders.com/blockchain/coinbase.html](https://anders.com/blockchain/coinbase.html)
 - 一些原理的介绍：
