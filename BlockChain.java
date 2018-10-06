@@ -371,7 +371,7 @@ public class BlockChain{
         }
         catch(Exception e){
             System.out.println(e);
-        }
+        } 
     }
 
     /*模拟黑客攻击*/
@@ -382,6 +382,12 @@ public class BlockChain{
         String hash = bc.get(0).preHash;
         for(Block block : bc){
             if(block.preHash != hash) return false;
+            try{
+                if(!block.hash.equals(hash256(block.index+block.preHash+block.coinBase+block.nonce))) return false; //检查数据有没有被更改
+            }
+            catch(Exception e){
+                System.out.println(e);
+            } 
             hash = block.hash;
         }
         return true;
